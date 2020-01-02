@@ -2,6 +2,7 @@
 本场景用于帮助用户理解 Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者。
 
 -   
+<br>
      Difficulty: beginner  Estimated Time: 30 minutes
 Before diving into the Operator Framework, this section will give an overview of Kubernetes API fundamentals. Although the Operator SDK makes creating an Operator fun and easy, understanding the structure and features of the Kubernetes API is required.
 
@@ -35,7 +36,7 @@ EOF
 
 Create the pod by specifying the manifest:
 
-oc create -f pod-multi-container.yaml
+<br>oc create -f pod-multi-container.yaml
 
 View the detail for the pod and look at the events:
 
