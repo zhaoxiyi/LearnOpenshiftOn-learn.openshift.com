@@ -6,33 +6,44 @@ https://learn.openshift.com
 所有有志于学习kubernetes或是OpenShift（Orgin）技术的同学，无论基于何种角度或是何种目的，都可以从这个网站上快速学习到很多很有价值的知识和信息。
 作为现役 Redhat 员工，我个人觉得这个网站虽然设计的非常出色，而且信息非常充足，但更多的关注于技术本身，更多的描述“How to...”而很少解释"Why to ...."。 因此基于个人经验在github上分享一下我对这些技术的理解和应用场景的讨论。 基于个人立场的不同，每个人对技术的发展与目标总用各种不同的理解。 因此本文更多的是个人行为，不完全代表 Redhat 公司的官方观点。
 
-# learn.openshift.com and Katacoda
+## learn.openshift.com and Katacoda
 https://learn.openshift.com
 
 目前 Redhat 为 learn.openshift.com 规划了六个大类的课程，每个课程分为很多场景（Scenario），每个场景中包含众多的步骤。 实际上很多步骤都包含众多的知识点。跟随场景的教程一一完成教学内容后，用户通常似乎了解了很多但又似乎有多细节不甚了了。因此在这个 Repo 中，作者更注重另读者可以更好的理解这些场景为何要这样做，他在真实环境中究竟能解决什么问题。
 
-OpenShift Course 课程系列
+## OpenShift Course 课程系列
 
 1. Foundations of OpenShift 
     -Openshift基础能力介绍
 
+### 教程场景 Scenarios
+
 2. Building Applications On OpenShift 
     -如何借助 Openshift 快速搭建App
+
+### 教程场景 Scenarios
 
 3. Subsystems, Components, and Internals 
     -Openshift的子系统、组件和内部模块
 
+### 教程场景 Scenarios
+
 4. OpenShift Playgrounds 
     -Openshift Playground 完整场景模拟使用
 
+### 教程场景 Scenarios
+
+
 5. Service Mesh Workshop with Istio 
     -Openshift 微服务 Istio 构建教程
+
+### 教程场景 Scenarios
 
 6. Building Operators on OpenShift 
     -Openshift Operator Framework 框架介绍
   Operator Framework 服务框架是目前非常重要的一个 kubernetes 开源项目。由 Redhat 主导。它的目标是令 Kubernetes 上的应用以一种更加封装，更加整洁，更加原子化实现业务能力的整体发布、供应、服务、回收。是一个为业务能力能够实现整体能力供应，并能够实现全生命周期管理的服务框架。它的发展主旨是令 Kubernetes 框架更加符合 PaaS 平台的业务需求。因此是当前非常重要且热度很高的社区项目。 （Operator Framework 社区项目地址 https://github.com/operator-framework）
 
-教程场景 Scenarios
+### 教程场景 Scenarios
 
     - Kubernetes API Fundamentals[./6-OperatorFrameworkOnOpenshift/KubernetesAPIFund.md]
         Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者
