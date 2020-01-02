@@ -45,7 +45,7 @@ https://learn.openshift.com
 
 ### 教程场景 Scenarios
 
-    - Kubernetes API Fundamentals[./6-OperatorFrameworkOnOpenshift/KubernetesAPIFund.md]
+    [Kubernetes API Fundamentals](6-OperatorFrameworkOnOpenshift/KubernetesAPIFund.md)
         Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者
 
     - Etcd Operator
