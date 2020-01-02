@@ -33,6 +33,7 @@ OpenShift Course 课程系列
   Operator Framework 服务框架是目前非常重要的一个 kubernetes 开源项目。由 Redhat 主导。它的目标是令 Kubernetes 上的应用以一种更加封装，更加整洁，更加原子化实现业务能力的整体发布、供应、服务、回收。是一个为业务能力能够实现整体能力供应，并能够实现全生命周期管理的服务框架。它的发展主旨是令 Kubernetes 框架更加符合 PaaS 平台的业务需求。因此是当前非常重要且热度很高的社区项目。 （Operator Framework 社区项目地址 https://github.com/operator-framework）
 
 教程场景 Scenarios
+
     - Kubernetes API Fundamentals
         Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者
 
