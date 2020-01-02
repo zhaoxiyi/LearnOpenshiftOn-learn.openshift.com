@@ -1,7 +1,8 @@
 # Kubernetes API Fundamentals
 本场景用于帮助用户理解 Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者。
 
- Difficulty: beginner  Estimated Time: 30 minutes
+-   
+     Difficulty: beginner  Estimated Time: 30 minutes
 Before diving into the Operator Framework, this section will give an overview of Kubernetes API fundamentals. Although the Operator SDK makes creating an Operator fun and easy, understanding the structure and features of the Kubernetes API is required.
 
 Kubernetes Manifests
@@ -62,4 +63,4 @@ ip address
 netstat -ntlp
 hostname
 exit
-
+-   
