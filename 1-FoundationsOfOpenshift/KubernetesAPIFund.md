@@ -25,5 +25,5 @@ Before diving into the Operator Framework, this section will give an overview of
 当然作为一个原理展示的简单例子，本场景设计之初并没有考虑更多复杂的问题。其中有很多没有涉及到的内容。例如如何与认证体系挂钩，‘oc proxy’ 命令需要又集群管理角色才能使用，那么如何设计一个合理的角色来实现中转是我们需要考虑的问题。此外如何限制使用者使用 API 的能力范围也没有在本场景中设计，需要我们自己考虑。
 
 #### 操作过程
-[Step 1](Step1.md)
-[Step 2](Step2.md)
+[Step 1](Step1.md) <br>
+[Step 2](Step2.md) <br>
