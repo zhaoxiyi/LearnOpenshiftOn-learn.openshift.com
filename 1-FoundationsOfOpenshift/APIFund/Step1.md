@@ -1,6 +1,6 @@
 # 第一步 Step1
 ###### 快捷链接
-[场景综述](KubernetesAPIFund.md) <br>
+[场景综述](../KubernetesAPIFund.md) <br>
 [下一步](Step2.md) <br>
 
 #### 操作过程
@@ -47,8 +47,8 @@ https://github.com/nginxinc/docker-nginx/blob/a973c221f6cedede4dab3ab36d18240c4d
 https://hub.docker.com/layers/nginx/library/nginx/1.17.6-alpine/images/sha256-cdf5e75dc8f0afda8614680d6a3aaf77807943e961ea9c0d5a09c5b6f69ff702
 
 选择 Image 镜像很重要，初学者为了方便通常随便从网上查找一个就使用，这非常容易带来安全与稳定性方面的隐患。对于企业使用来讲最好选择一些企业提供的官方镜像，例如在 Redhat 公司的官方镜像网站上下载。
-https://catalog.redhat.com/software/containers/explore
-![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.png)
+https://catalog.redhat.com/software/containers/explore <br>
+![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.jpg)
 
 ### 基于Menifest描述文件建立Pod
 有了上面的 manifest 文件（YAML文件）就可以在 OpenShift 上快速建立一个完整的 Nginx 运行环境（包括两个容器 Containers），一个命令就可以搞定:
@@ -157,7 +157,7 @@ PID   USER     TIME  COMMAND
 $
 ```
 对比可以看到 ‘ip address’ 一样，hostname 一样，netstat 不完全一样（ side-car 可以看见监听 80 端口，可是无法看到 PID/Program name），‘ps’ 完全不一样。这就是两个 Container Pod 的基础原理。
-![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.png)
+![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.jpg)
 
 注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如下显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。
-![Create two containers Pod success katacoda view](snapshort/katacoda_edit_file_snapshort.png)
+![Create two containers Pod success katacoda view](snapshort/katacoda_edit_file_snapshort.jpg)
