@@ -8,10 +8,10 @@
 [查看版本](#查看版本) <br>
 [设定指定API反馈深度](#设定指定API反馈深度) <br>
 [建立一个API代理点](#建立一个API代理点) <br>
-可选步骤 <br>
-[列出指定范围所有openAPI](#列出指定范围所有openAPI) <br>
-[使用jQuery语法](#使用jQuery语法) <br>
-[其它常用操作](#其它常用操作) <br>
+   - 可选步骤 <br>
+      [列出指定范围所有openAPI](#列出指定范围所有openAPI) <br>
+      [使用jQuery语法](#使用jQuery语法) <br>
+      [其它常用操作](#其它常用操作) <br>
 
 ### 查看版本
 查看 OpenShift(Kubernetes) 版本

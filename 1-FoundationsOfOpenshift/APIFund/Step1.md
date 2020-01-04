@@ -7,8 +7,9 @@
 [建立项目 Project](#建立项目) <br>
 [建立描述文件 Menifest](#建立menifest描述文件) <br>
 [建立 Pod](#基于描述文件建立Pod) <br>
-[查看 Pod](#可选步骤) <br>
-[其它](#其它) <br>
+   - 可选步骤
+      [查看 Pod](#可选步骤) <br>
+      [其它](#其它) <br>
 
 ### 建立项目：
 
@@ -159,5 +160,5 @@ $
 对比可以看到 ‘ip address’ 一样，hostname 一样，netstat 不完全一样（ side-car 可以看见监听 80 端口，可是无法看到 PID/Program name），‘ps’ 完全不一样。这就是两个 Container Pod 的基础原理。
 ![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.jpg)
 
-注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如下显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。
+注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如上图下方Terminal中显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是还会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。
 ![Create two containers Pod success katacoda view](snapshort/katacoda_edit_file_snapshort.jpg)
