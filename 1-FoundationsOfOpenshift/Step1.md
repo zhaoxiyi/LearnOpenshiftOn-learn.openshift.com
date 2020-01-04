@@ -1,19 +1,19 @@
 # 第一步 Step1
 
 #### 操作过程
-[建立项目 Project](#[1] 建立项目)
-[建立描述文件 Menifest](#[2] 建立 Pod 描述文件)
-[建立 Pod](#[3] 基于 Pod 描述文件建立 Pod)
-[查看 Pod](#[*] 可选步骤)
+[建立项目 Project](#建立项目)
+[建立描述文件 Menifest](#建立 Pod 描述文件)
+[建立 Pod](#基于 Pod 描述文件建立 Pod)
+[查看 Pod](#可选步骤)
 [其它](#其它)
 
-### [1] 建立项目：
+### 建立项目：
 
 ```
 oc new-project myproject
 ```
 
-[2] 建立 Pod 描述文件：
+### 建立 Pod 描述文件：
 设计多容器单Pod项目描述文件 Menifest file。
 在 Kubernetes 和 OpenShift 的学习过程中经常会有一个误区，认为一个 Pod 就是一个容器，这是不对的。 一个 Pod 代表一个部署位置（Position of Deployment Pod ，这里和物理机房部署用的 POD 用词是一样的，因此在讨论或文章里一定要注意，通常 Kubernetes Pod 不会全用大写，而机房 POD 会全用大写）因此一个 Pod 通常被定义为一个元素级部署逻辑。比如下面这个部署描述中所展示的这个例子，它是一个 Nginx + 它的 SideCar 的联合部署。 这样的用法非常典型，他可以确保一个完整的支撑逻辑可以同时启停及同时扩缩容，非常有利于服务的原子化设计。
 以下这个 YAML 文件描述了一个完整的部署逻辑，其中包括了部署的内容类型是一个 Pod ，‘kind： Pod’。 标记希望用于开发环境，‘labels： environment： dev’ 。在 ‘spec’ 中描述了这个部署有两个容器， ‘containers’ 有两个 name 和 image ，在特定的image描述中还要提供基础要求的参数，比如 nginx ，需要指定相应的 containerPort:80 和协议 protocal:TCP 。:
@@ -47,14 +47,14 @@ https://hub.docker.com/layers/nginx/library/nginx/1.17.6-alpine/images/sha256-cd
 https://catalog.redhat.com/software/containers/explore
 ![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.png)
 
-### [3] 基于 Pod 描述文件建立 Pod
+### 基于 Pod 描述文件建立 Pod
 有了上面的 manifest 文件（YAML文件）就可以在 OpenShift 上快速建立一个完整的 Nginx 运行环境（包括两个容器 Containers），一个命令就可以搞定:
 ```
 oc create -f pod-multi-container.yaml
 ```
 这个命令除了在本场景中执行，也可以在任何一个 OpenShift 环境中执行，(oc 是 Orgin Openshift 的客户端命令，Kubernetes 是没有这个命令的，Kubernetes 需要用 kubectl 命令)前提是你的 OpenShift 所注册的镜像库必须要拥有这个版本的 niginx 镜像，和 Sidecar 用到的 alpine 基础镜像。有不少企业在真实环境中是不能够直连互联网的。而 OpenShift 的默认基础安装是认为 OpenShift 所在环境可以访问互联网，并通过签名将相应的指定镜像自动引入 OpenShift 安装时所配置的中央镜像库，使基于 OpenShift 开发的用户可以使用特定的镜像。 如果所在环境无法直连互联网将导致镜像引入失败，从而无法完成操作，这个问题需要配置离线镜像库来解决，配置离线镜像库是一个复杂的工作，在这里不深入讨论，建议如果需要配置离线镜像库的朋友一定要找 Redhat 的顾问或专家，由专家给出符合具体企业环境的建议方案。
 
-### [*] 可选步骤
+### 可选步骤
 对于熟知 OpenShift （Kubernets）原理的朋友就可以忽略以下内容，以下内容主要是为了向用户展示多容器 Pod 的底层资源关系.
 完成了上述命令就可以通过下面这个命令来查看 Pod 在建立过程中所有的事件流
 View the detail for the pod and look at the events:
