@@ -25,12 +25,12 @@ Before diving into the Operator Framework, this section will give an overview of
 当然作为一个原理展示的简单例子，本场景设计之初并没有考虑更多复杂的问题。其中有很多没有涉及到的内容。例如如何与认证体系挂钩，‘oc proxy’ 命令需要又集群管理角色才能使用，那么如何设计一个合理的角色来实现中转是我们需要考虑的问题。此外如何限制使用者使用 API 的能力范围也没有在本场景中设计，需要我们自己考虑。
 
 #### 操作过程
-[1] 第一步，建立项目，设计多容器单Pod项目描述
-Let's begin my creating a new project called myproject:
+[1] 第一步，建立项目，设计多容器单Pod项目描述:
+在 Kubernetes 和 OpenShift 的学习过程中经常会有一个误区，认为一个 Pod 就是一个容器，这是不对的。 一个 Pod 代表一个部署位置， Position of Deployment ，因此一个 Pod 通常被定义为一个元素级部署逻辑。比如下面这个部署描述中所展示的这个例子，它是一个 Nginx + 它的 SideCar 的联合部署。 这样的用法非常典型，他可以确保一个完整的支撑逻辑可以同时启停及同时扩缩容，非常有利于服务的原子化设计 :
 ```
 oc new-project myproject
 ```
-Create a new pod manifest that specifies two containers:
+以下这个 YAML 文件描述了一个完整的部署逻辑，其中包括了部署的内容类型是一个 Pod ，‘kind： Pod’。 标记希望用于开发环境，‘labels： environment： dev’ 。在 ‘spec’ 中描述了这个部署有两个容器， ‘containers’ 有两个 name 和 image ，在特定的image描述中还要提供基础要求的参数，比如 nginx ，需要指定相应的 containerPort:80 和协议 protocal:TCP 。:
 ```
 cat > pod-multi-container.yaml <<EOF
 apiVersion: v1
@@ -53,7 +53,16 @@ spec:
   restartPolicy: Never
 EOF
 ```
+关于 Nginx 这个镜像的细节可以到下列网站中去了解。 
+https://github.com/nginxinc/docker-nginx/blob/a973c221f6cedede4dab3ab36d18240c4d3e3d74/mainline/alpine/Dockerfile
+https://hub.docker.com/layers/nginx/library/nginx/1.17.6-alpine/images/sha256-cdf5e75dc8f0afda8614680d6a3aaf77807943e961ea9c0d5a09c5b6f69ff702
+
+选择 Image 镜像很重要，初学者为了方便通常随便从网上查找一个就使用，这非常容易带来安全与稳定性方面的隐患。对于企业使用来讲最好选择一些企业提供的官方镜像，例如在 Redhat 公司的官方镜像网站上下载。
+https://catalog.redhat.com/software/containers/explore
+![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.png)
+
 Create the pod by specifying the manifest:
+
 ```
 oc create -f pod-multi-container.yaml
 ```
