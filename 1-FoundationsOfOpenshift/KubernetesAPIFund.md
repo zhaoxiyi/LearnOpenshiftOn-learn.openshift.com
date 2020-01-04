@@ -174,4 +174,4 @@ $
 ![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.png)
 
 注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如下显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。
-![Create two containers Pod success katacoda view](snapshort/katacoda_edit_snapshort.png)
+![Create two containers Pod success katacoda view](snapshort/katacoda_edit_file_snapshort.png)
