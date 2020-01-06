@@ -5,9 +5,9 @@
 
 #### 操作过程
 [建立项目 Project](#建立项目) <br>
-[建立描述文件 Menifest](#建立menifest描述文件) <br>
+[建立描述文件 Manifest](#建立manifest描述文件) <br>
 [建立 Pod](#基于描述文件建立Pod) <br>
-   - 可选步骤
+   - 可选步骤 <br>
       [查看 Pod](#可选步骤) <br>
       [其它](#其它) <br>
 
@@ -17,8 +17,8 @@
 oc new-project myproject
 ```
 
-### 建立Menifest描述文件：
-设计多容器单Pod项目描述文件 Menifest file。
+### 建立Manifest描述文件：
+设计多容器单Pod项目描述文件 Manifest file。
 在 Kubernetes 和 OpenShift 的学习过程中经常会有一个误区，认为一个 Pod 就是一个容器，这是不对的。 一个 Pod 代表一个部署位置（Position of Deployment Pod ，这里和物理机房部署用的 POD 用词是一样的，因此在讨论或文章里一定要注意，通常 Kubernetes Pod 不会全用大写，而机房 POD 会全用大写）因此一个 Pod 通常被定义为一个元素级部署逻辑。比如下面这个部署描述中所展示的这个例子，它是一个 Nginx + 它的 SideCar 的联合部署。 这样的用法非常典型，他可以确保一个完整的支撑逻辑可以同时启停及同时扩缩容，非常有利于服务的原子化设计。
 以下这个 YAML 文件描述了一个完整的部署逻辑，其中包括了部署的内容类型是一个 Pod ，‘kind： Pod’。 标记希望用于开发环境，‘labels： environment： dev’ 。在 ‘spec’ 中描述了这个部署有两个容器， ‘containers’ 有两个 name 和 image ，在特定的image描述中还要提供基础要求的参数，比如 nginx ，需要指定相应的 containerPort:80 和协议 protocal:TCP 。:
 ```
@@ -51,7 +51,7 @@ https://hub.docker.com/layers/nginx/library/nginx/1.17.6-alpine/images/sha256-cd
 https://catalog.redhat.com/software/containers/explore <br>
 ![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.jpg)
 
-### 基于Menifest描述文件建立Pod
+### 基于Manifest描述文件建立Pod
 有了上面的 manifest 文件（YAML文件）就可以在 OpenShift 上快速建立一个完整的 Nginx 运行环境（包括两个容器 Containers），一个命令就可以搞定:
 ```
 oc create -f pod-multi-container.yaml
@@ -157,11 +157,11 @@ PID   USER     TIME  COMMAND
 / # exit
 $
 ```
-对比可以看到 ‘ip address’ 一样，hostname 一样，netstat 不完全一样（ side-car 可以看见监听 80 端口，可是无法看到 PID/Program name），‘ps’ 完全不一样。这就是两个 Container Pod 的基础原理。
+对比可以看到 ‘ip address’ 一样，hostname 一样，netstat 不完全一样（ side-car 可以看见监听 80 端口，可是无法看到 PID/Program name），‘ps’ 完全不一样。这就是两个 Container Pod 的基础原理。<br>
 ![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.jpg)
 
-注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如上图下方Terminal中显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是还会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。
+注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如上图下方Terminal中显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是还会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。<br>
 ![katacoda files broswer and edit view](snapshort/katacoda_edit_file_snapshort.jpg)
 
 [回到顶部](#第一步)
-[下一步骤](#Step2.md)
+[下一步骤](Step2.md)

@@ -1,8 +1,8 @@
-# 第二步
+# 第一步 Step2
 ###### 快捷链接
 [场景综述](../KubernetesAPIFund.md) <br>
-[上一步](Step1.md) <br>
-[下一步](Step3.md) <br>
+[上一步](Step3.md) <br>
+[下一步](Step5.md) <br>
 
 #### 操作过程
 [查看版本](#查看版本) <br>
@@ -73,73 +73,26 @@ Use the oc proxy command to proxy local requests on port 8001 to the Kubernetes 
 oc proxy --port=8001
 ```
 这个命令的价值在[本场景的综述](../KubernetesAPIFund.md#场景说明)中已经描述过了，这里就不做更多的解释了。
-
-接下来可以在 Katacoda 里面可以再开一个 Termianl 窗口，模拟从另一个位置来访问这个 proxy。从 proxy 我们可以像使用正常的内部 API Server 一样从外部使用任何 API。谨慎使用，此时你已经通过你客户端将 Kubernetes 所有能力开放给外部了。
 Open up another terminal by clicking the + button and select Open New Terminal. 
+
 Send a GET request to the Kubernetes API using curl:
 ```
 curl -X GET http://localhost:8001
 ```
-curl 是一个极好用的命令，他可以对任何 HTTP 或 HTTPS 端点发起测试请求，只要使用正确的参数，合适的命令脚本，就可以完成如 Postman 等其它测试工具才能完成的功能。
 ### 列出指定范围所有openAPI
-用 ’curl‘ 命令来要求 OpenShift 列出所有 openapi 中可以使用的 API。这里需要注意，openapi v2 所包含的详细内容将有5M 多些，如果在国内使用这个命令你将会发现屏幕会不停的输出内容直至 TimeOut 。 所以建议在做着练习的时候改变一个方式
-原练习描述：
 We can explore the OpenAPI definition file to see complete API details.
 ```
 curl localhost:8001/openapi/v2
 ```
-我们可以改为：
-```
-curl localhost:8001/openapi/v2 > openapiv2.json
-```
-然后使用 'more openapiv2.json' 来查看这个文件（用 cat 或是用 Katacoda 自带的文件浏览器都会在显示文件的过程中超时）
-接下来可以尝试用一些特定的 API 来获得指定的信息，例如 Pods 的执行信息。
 Send a GET request to list all pods in the environment:
 ```
 curl -X GET http://localhost:8001/api/v1/pods
 ```
-如果返回的 json 内容还是太多就可以使用下面介绍的 jQuery 来获得精准的指定信息。
 ### 使用jQuery语法
-jQuery是一个快速、小型且功能丰富的JavaScript库。它使用一个在多种浏览器上工作的易于使用的API，使得HTML文档遍历和操作、事件处理、动画和Ajax等工作变得更加简单。随着多功能性和可扩展性的结合，jQuery改变了数百万人编写JavaScript的方式。
-关于 jQuery 的细节信息大家可以到 jQuery 社区去学习
-https://jquery.com
-jQuery是一个学习成本非常低的小手段，但是它可以在很多场景中派上用场，比如在过滤 json 输出的复杂内容（它也可以用于过滤任何符合 HTML/XML 句法的报文，例如 REST 报文。） 
 Use jq to parse the json response:
 ```
-$ curl -X GET http://localhost:8001/api/v1/pods | jq .items[].metadata.name
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  220k    0  220k    0     0  9304k      0 --:--:-- --:--:-- --:--:-- 9591k
-"docker-registry-1-9n4f5"
-"registry-console-1-xv5vq"
-"router-1-qslzg"
-"apiserver-7cpq2"
-"controller-manager-fdfmk"
-"master-api-master"
-"master-controllers-master"
-"master-etcd-master"
-"my-two-container-pod"
-"asb-1-deploy"
-"console-5677c7c58d-g48pf"
-"alertmanager-main-0"
-"alertmanager-main-1"
-"alertmanager-main-2"
-"cluster-monitoring-operator-6465f8fbc7-skz6c"
-"grafana-6b9f85786f-2b9x6"
-"kube-state-metrics-7449d589bc-6x6vw"
-"node-exporter-hvktg"
-"prometheus-k8s-0"
-"prometheus-k8s-1"
-"prometheus-operator-6644b8cd54-rbwmb"
-"sync-gtngx"
-"ovs-4kg9c"
-"sdn-pdw7j"
-"apiserver-7lncd"
-"webconsole-7df4f9f689-lf7br"
-$
+curl -X GET http://localhost:8001/api/v1/pods | jq .items[].metadata.name
 ```
-这个例子里面介绍了将 pods API 返回的 json 报文进行整理，首先将所有条目 '.items[]' ('[]'代表取得所有，如果写为 '[3]') 代表要取得第三个条目 item 的所有内容。 在所有 items 里选择 metadata 段下面的 name 下所输出的值。所以写为 '.metadata.name'。 而通过 '|' 管道符将 API 返回结果交给 jq 及相应的公式来处理，最终返回值只剩下如上列表，它输出了一系列 String 对象，每个对象都是一个 metadata 下的 name。 真实含义是返回了 OpenShift 里目前都有那些 Pods 它们的名字是什么。
-
 ### 其它常用操作
 [1] 获得所有 Pods 的信息
 We can scope the response by only viewing all pods in a particular namespace:
@@ -152,44 +105,38 @@ Get more details on a particular pod within the myproject namespace:
 curl -X GET http://localhost:8001/api/v1/namespaces/myproject/pods/my-two-container-pod
 ```
 [3] 使用 json 格式来接收或更改某项配置（你可以将json再转给其它系统使用）
-为了使用 json 格式的 manifist 文件来作为参数输入 API 从而改变 Pods 的配置，我们首先需要先有一个基础。我们可以向现有的 Pod 要一份基础信息。 oc 命令允许我们使用 export 参数来输出一份 manifest ，当然你需要通过 '-o' 参数告知 oc 命令，你需要的是一个 json 格式。
 Export the manifest associated with my-two-container-pod in json format:
 ```
 oc get pods my-two-container-pod --export -o json > podmanifest.json
 ```
-有了 podmanifest.json 这个基础，你可以调整任何你希望修改的地方，比如这个例子中是将基础镜像从 1.13 版本改为 1.14 版本。下面命令通过 sed 找到 podmanifest.json 文件中所有nginx:1.13 然后改为 nginx:1.14
 Within the manifest, replace the 1.13 version of alpine with 1.14:
 ```
 sed -i 's|nginx:1.13-alpine|nginx:1.14-alpine|g' podmanifest.json
 ```
-有了这个新的 manifest 文件，你就可以使用 pods API 直接修改在线 Pods 而无需关心其它细节，比如应用怎们办，代码怎么办。这一切期都会沿用之前 Pods 部署的设置直接在服务器上重新执行一遍，从而将老的基础镜像换成新的，这种操作就是典型 DevOps 福利，让 Ops 人员无需关注 Dev 即可完成部分原本 Dev 人员才能完成的任务。
 Update/Replace the current pod manifest with the newly updated manifest:
 ```
 curl -X PUT http://localhost:8001/api/v1/namespaces/myproject/pods/my-two-container-pod -H "Content-type: application/json" -d @podmanifest.json
 ```
 [4] 为 Pod 更新镜像版本
-curl 的 PATCH 方法是 PUT 方法的一种补充，它可以只更新部分参数， 我们可以看到在下面这个例子里面，我们只将 'spec' 部分进行了更新，而不需要关心完整的 json 是什么样子的。这样我们就不需要先向 oc 命令去要一个原本 manifest 文件了。我们只要保证 spec 部分的格式没有问题我们就能完成刚刚的更新操作。下面这个例子将基础镜像更新到了 nginx:1.15-alpine 版本。
 Patch the current pod with a newer container image (1.15):
 ```
 curl -X PATCH http://localhost:8001/api/v1/namespaces/myproject/pods/my-two-container-pod -H "Content-type: application/strategic-merge-patch+json" -d '{"spec":{"containers":[{"name": "server","image":"nginx:1.15-alpine"}]}}'
 ```
 [5] 删除 Pod
-删除 Pod 就更加简单了，我们使用 DELETE 方法请求具体的 pods API 中的指定 pod，它就被删除了。
 Delete the current pod by sending the DELETE request method:
 ```
 curl -X DELETE http://localhost:8001/api/v1/namespaces/myproject/pods/my-two-container-pod
 ```
-验证一下 Pod 是否被删除了。
 Verify the pod is in Terminating status:
 ```
 oc get pods
 ```
-再验证一下 API 上是不是也没了。
 Verify the pod no longer exists:
 ```
 curl -X GET http://localhost:8001/api/v1/namespaces/myproject/pods/my-two-container-pod
 ```
 
-[回到顶部](#第二步) <br>
-[上一步骤](Step1.md) <br>
-[下一步骤](Step2.md) <br>
+
+[回到顶部](#第四步) <br>
+[上一步骤](Step3.md) <br>
+[下一步骤](Step5.md) <br>
