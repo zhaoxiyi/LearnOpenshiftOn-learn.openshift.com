@@ -39,7 +39,7 @@ https://learn.openshift.com
 （制作中）
 ### 教程场景 Scenarios 
 
-    - [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
+    [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
 
     - [微服务发布](5-IstioServMeshOnOpenshift/deploy_microservices.md)
 
