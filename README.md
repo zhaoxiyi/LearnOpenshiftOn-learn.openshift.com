@@ -36,7 +36,7 @@ https://learn.openshift.com
 
 5. Service Mesh Workshop with Istio 
     -Openshift 微服务 Istio 构建教程
-    （制作中）
+    <font color=red>（制作中···）</font><br>
     ###### 教程场景 Scenarios 5
 
     - [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
@@ -61,7 +61,7 @@ https://learn.openshift.com
 
 6. Building Operators on OpenShift 
     -Openshift Operator Framework 框架介绍
-    （制作中）
+    <font color=red>（制作中···）</font><br>
   Operator Framework 服务框架是目前非常重要的一个 kubernetes 开源项目。由 Redhat 主导。它的目标是令 Kubernetes 上的应用以一种更加封装，更加整洁，更加原子化实现业务能力的整体发布、供应、服务、回收。是一个为业务能力能够实现整体能力供应，并能够实现全生命周期管理的服务框架。它的发展主旨是令 Kubernetes 框架更加符合 PaaS 平台的业务需求。因此是当前非常重要且热度很高的社区项目。 （Operator Framework 社区项目地址 https://github.com/operator-framework）
 
     ###### 教程场景 Scenarios 6
