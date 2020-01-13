@@ -36,10 +36,10 @@ https://learn.openshift.com
 
 5. Service Mesh Workshop with Istio 
     -Openshift 微服务 Istio 构建教程
-（制作中）
+    （制作中）
     ###### 教程场景 Scenarios 5
 
-    [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
+    - [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
 
     - [微服务发布](5-IstioServMeshOnOpenshift/deploy_microservices.md)
 
