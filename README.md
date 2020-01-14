@@ -68,28 +68,28 @@ https://github.com/openshift-labs/learn-katacoda
     ###### 教程场景 Scenarios 6
 
     - [Kubernetes API Fundamentals](https://github.com/zhaoxiyi/LearnOpenshiftOn-learn.openshift.com/blob/master/1-FoundationsOfOpenshift/KubernetesAPIFund.md)
-        Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者
+        
 
-    - Etcd Operator
-        标准的 Etcd Operator ，Etcd Operator 由社区提供，可以基于OpenShift 直接借助 Operator 的能力实现一键或单命令实现 Etcd 集群供应，包括供应时直接可以包含相应的持久化定制和集群 Scale up Scale down 能力。将 Etcd 的供应基于 RBAC 角色能力实现 Etcd 数据库供应者与数据库消费者角色分离等更加贴合真实世界使用场景的 PaaS 化使用方式。
+    - [Etcd Operator]()
+        
 
-    - Operator SDK with Go
-        使用 Go 语言快速操作 Operator SDK 来完成多种复杂任务
+    - [Operator SDK with Go]()
+        
 
-    - Operator Lifecycle Manager
-        基于 Operator Framework 的能力来实现 Operator 控制业务能力的生命周期控制
+    - [Operator Lifecycle Manager]()
+        
 
-    - Ansible Refresher
-        Ansible Operator 实现 Refresher 能力
+    - [Ansible Refresher]()
+        
 
-    - Ansible Kubernetes Modules
-        Openshift 上已经实现的 Ansible Operator 能力，实现基于 Ansible 控制各类 Kubernetes Module 模块。实现多种常用 Kubernetes 能力
+    - [Ansible Kubernetes Modules]()
+        
 
-    - Ansible Operator Overview
-        详述 Ansible Operator 可以实现那些能力
+    - [Ansible Operator Overview]()
+        
 
-    - Mcrouter Operator powered by Ansible Operator
-        通过 Ansible Operator 实现的 Mcrouter Operator 用以演示如何使用 Ansible Operator 来实现更有业务价值的能力 Operator
+    - [Mcrouter Operator powered by Ansible Operator]()
+        
 
-    - Operator SDK with Helm
-        通过 Helm 操作 Operator SDK ，协助消费者或供应者快速基于 Helm 使用或者实现新的 Operator
+    - [Operator SDK with Helm]()
+        
