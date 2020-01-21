@@ -1,4 +1,4 @@
-# Kubernetes API Fundamentals
+# Istio Introduction
 
 使用下面链接可以直接进入场景
 https://learn.openshift.com/servicemesh/1-introduction
@@ -11,7 +11,7 @@ https://learn.openshift.com/servicemesh/1-introduction
 快速链接: <br>
 [场景说明](#场景说明) <br>
 [操作步骤](#操作步骤) <br>
-[返回](#../README.md) <br>
+[返回](../README.md) <br>
 
 #### 场景说明
 Redhat 给该场景的说明
