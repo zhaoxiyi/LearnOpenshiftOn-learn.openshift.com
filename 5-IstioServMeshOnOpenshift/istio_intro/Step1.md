@@ -4,164 +4,31 @@
 [下一步](Step2.md) <br>
 
 #### 操作过程
-[建立项目 Project](#建立项目) <br>
-[建立描述文件 Manifest](#建立manifest描述文件) <br>
-[建立 Pod](#基于描述文件建立Pod) <br>
-   - 可选步骤 <br>
-      [查看 Pod](#可选步骤) <br>
-      [其它](#其它) <br>
+[本场景没有操作步骤只有Istio基础概念解释](#概念解释) <br>
 
-### 建立项目：
+### 概念解释
+什么是服务网格，为什么我们需要它？
+术语服务网格用于描述组成此类应用程序的微服务网络及其之间的交互。随着服务网格的大小和复杂性的增长，它变得越来越难以理解和管理。它的要求可以包括发现，负载平衡，故障恢复，指标和监视。服务网格通常还具有更复杂的操作要求，例如A / B测试，金丝雀版本，速率限制，访问控制和端到端身份验证。
+<h color="red">这是 Redhat 官方给出的解释，但是我要强调的是，在现在技术理论中，无论那种技术，都是以“以资源来交换便利性”为基础的。 Istio 或是任何一种其它的服务网格技术也都是如此。Istio 从出现之初在国内被人质疑的就是性能降低的问题。其实这个问题是不用尝试 Istio 也可以理解的。将一个完整的服务被拆成若干个相互沟通的单元服务，并且在其中增加了 SideCar 这样的代理点，这一切自然是会降低性能的。但大家考虑为什么要或是要不要使用服务网格时，一定要同时考虑到 Istio 这样的技术为什么会在 Kubernetes 这个技术成熟后才成为关注焦点。这是因为 Kubernetes 提供的多 Pod 共同支撑一个单元业务运行在跨网络计算资源这种基础技术架构为整体性能提供了一种浮动式调整的机制，这意味着你可以随时让跨网络 4 Coer CPU 执行的业务变为跨网络 8 Core CPU 执行，不受任何物理范围及其它原因的限制。这就式真正的业务目标可以抽象的在集群化计算资源上浮动调整，那么以 Istio 为例，它所额外的消耗可以很容易的均摊到更多的计算资源上去。只要可以完整单位时间的业务目标，谁又在乎多话费一些计算资源呢？何况多花费的计算资源还会因为 Kubernetes 的跨网络调度机制，通过计算资源利用率的提高弥补回来，我们甚至不需要多购买新的硬件就可以获取更多可用的计算资源。 这就是为什么我总想向我的客户解释， 在考虑服务网格是否适合真实业务需求时，用户其实并不需要更多的关注于 Istio 究竟带来了多少指定资源内的性能下降，而是应该考虑完成既定业务目标 （例如设定原业务预期的单元测试的TPCC值）预期下，我们需要多花费多少计算资源（Pod 数量和 CPU 配额）。在此基础之上，如果我们判断了我们可接受计算资源的额外开销，那么接下来我们要判断的就是服务网格是否能给我们带来我们所需的好处了。</h>
 
-```
-oc new-project myproject
-```
+Istio提供了整个服务网格上的行为洞察力和操作控制，从而提供了一个完整的解决方案来满足微服务应用程序的各种需求。它在服务网络中统一提供许多关键功能：
+   - Traffic Management 流量控制。控制服务之间的流量和API调用流，使调用更可靠，并在不利条件下使网络更健壮。
+   - Observability  可观察性。了解服务之间的依赖性以及服务之间的流量的性质和流，从而能够快速发现问题。
+   - Policy Enforcement 政策执行。将组织策略应用于服务之间的交互，确保访问策略得到实施，并且资源在消费者之间公平分配。策略更改是通过配置网格进行的，而不是通过更改应用程序代码来进行的。
+   - Service Identity and Security 服务身份和安全性。为网状网络中的服务提供可验证的身份，并提供保护服务流量的能力，使其流经不同程度的信任度的网络。
 
-### 建立Manifest描述文件：
-设计多容器单Pod项目描述文件 Manifest file。
-在 Kubernetes 和 OpenShift 的学习过程中经常会有一个误区，认为一个 Pod 就是一个容器，这是不对的。 一个 Pod 代表一个部署位置（Position of Deployment Pod ，这里和物理机房部署用的 POD 用词是一样的，因此在讨论或文章里一定要注意，通常 Kubernetes Pod 不会全用大写，而机房 POD 会全用大写）因此一个 Pod 通常被定义为一个元素级部署逻辑。比如下面这个部署描述中所展示的这个例子，它是一个 Nginx + 它的 SideCar 的联合部署。 这样的用法非常典型，他可以确保一个完整的支撑逻辑可以同时启停及同时扩缩容，非常有利于服务的原子化设计。
-以下这个 YAML 文件描述了一个完整的部署逻辑，其中包括了部署的内容类型是一个 Pod ，‘kind： Pod’。 标记希望用于开发环境，‘labels： environment： dev’ 。在 ‘spec’ 中描述了这个部署有两个容器， ‘containers’ 有两个 name 和 image ，在特定的image描述中还要提供基础要求的参数，比如 nginx ，需要指定相应的 containerPort:80 和协议 protocal:TCP 。:
-```
-cat > pod-multi-container.yaml <<EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: my-two-container-pod
-  namespace: myproject
-  labels:
-    environment: dev
-spec:
-  containers:
-    - name: server
-      image: nginx:1.13-alpine
-      ports:
-        - containerPort: 80
-          protocol: TCP
-    - name: side-car
-      image: alpine:latest
-      command: ["/usr/bin/tail", "-f", "/dev/null"]
-  restartPolicy: Never
-EOF
-```
-关于 Nginx 这个镜像的细节可以到下列网站中去了解。 
-https://github.com/nginxinc/docker-nginx/blob/a973c221f6cedede4dab3ab36d18240c4d3e3d74/mainline/alpine/Dockerfile
-https://hub.docker.com/layers/nginx/library/nginx/1.17.6-alpine/images/sha256-cdf5e75dc8f0afda8614680d6a3aaf77807943e961ea9c0d5a09c5b6f69ff702
+除了这些行为之外，Istio还具有可扩展性，可以满足各种部署需求：
+   - Platform Support 平台支持。 Istio旨在在多种环境中运行，包括跨Cloud，本地，Kubernetes，Mesos等的环境。我们最初专注于Kubernetes，但正在努力为其他环境提供支持。
+   - Integration and Customization 集成和定制。可以扩展和定制策略执行组件，以与现有的ACL，日志记录，监视，配额，审计等解决方案集成。
 
-选择 Image 镜像很重要，初学者为了方便通常随便从网上查找一个就使用，这非常容易带来安全与稳定性方面的隐患。对于企业使用来讲最好选择一些企业提供的官方镜像，例如在 Redhat 公司的官方镜像网站上下载。
-https://catalog.redhat.com/software/containers/explore <br>
-![Go to the Redhat Image website view](snapshort/Redhat_image_snapshort.jpg)
+这些功能极大地减少了应用程序代码，基础平台和策略之间的耦合。这种减少的耦合不仅使服务更易于实现，而且使运营商更容易在环境之间或新的策略方案之间移动应用程序部署。结果，应用程序本来就变得更加可移植。
 
-### 基于Manifest描述文件建立Pod
-有了上面的 manifest 文件（YAML文件）就可以在 OpenShift 上快速建立一个完整的 Nginx 运行环境（包括两个容器 Containers），一个命令就可以搞定:
-```
-oc create -f pod-multi-container.yaml
-```
-这个命令除了在本场景中执行，也可以在任何一个 OpenShift 环境中执行，(oc 是 Orgin Openshift 的客户端命令，Kubernetes 是没有这个命令的，Kubernetes 需要用 kubectl 命令)前提是你的 OpenShift 所注册的镜像库必须要拥有这个版本的 niginx 镜像，和 Sidecar 用到的 alpine 基础镜像。有不少企业在真实环境中是不能够直连互联网的。而 OpenShift 的默认基础安装是认为 OpenShift 所在环境可以访问互联网，并通过签名将相应的指定镜像自动引入 OpenShift 安装时所配置的中央镜像库，使基于 OpenShift 开发的用户可以使用特定的镜像。 如果所在环境无法直连互联网将导致镜像引入失败，从而无法完成操作，这个问题需要配置离线镜像库来解决，配置离线镜像库是一个复杂的工作，在这里不深入讨论，建议如果需要配置离线镜像库的朋友一定要找 Redhat 的顾问或专家，由专家给出符合具体企业环境的建议方案。
+<h color="red">从上面的能力描述我们可以看出， Istio 作为服务网格解决方案，主要解决四个方向的问题，流量控制、执行监控、访问策略插入、身份和安全控制插入。当然这四个方面扩展出去可以有无限多的可能性，也就是说为什么要用服务网格可以有任意多种理由，但是为什么不使用 Istio 就可以简单的以一个标准来衡量。如果从根本上就不需要控制业务执行的数据流量、不需要理解业务内部执行的逻辑、不需要随业务执行增加新的执行可能性、不需要动态协调执行的安全问题，这四者并存那么你一定不需要服务网格。其实这么解释我们也可以从某些特定场景上来理解，假如我们碰到一个业务，它执行了好几年，业务职能正常，开发者已经找不到了，我也不想对他的执行环境做任何调整，它的改变对于业务盈利没有什么促进，那么我们当然不需要把它搞成服务网格。它最多可以成为某个沉淀业务单元或是原子化服务的后端。微服务什么的还是弄到那些更能促进业务收入的方向比较好。</h>
 
-### 可选步骤
-对于熟知 OpenShift （Kubernets）原理的朋友就可以忽略以下内容，以下内容主要是为了向用户展示多容器 Pod 的底层资源关系.
-完成了上述命令就可以通过下面这个命令来查看 Pod 在建立过程中所有的事件流
-View the detail for the pod and look at the events:
-```
-oc describe pod my-two-container-pod
-```
+什么是流量？
+使用 Istio 的流量管理模型从本质上将流量与基础架构扩展脱钩，让操作者通过 Pilot 指定他们希望流量遵循哪些规则，而不是哪些特定的 Pod/VM 应该接收流量- Pilot 和智能 Envoy 代理负责其余任务。因此，例如，您可以通过 Pilot 指定您希望特定服务的5％流量转到金丝雀（ Canary ）版本，而与金丝雀部署的大小无关，或者根据请求的内容将流量发送到特定版本。
+<h color="red"> Istio 解决方案中，对流量控制是一个很诱人的能力，它可以实现若干种平时我们趋之若鹜的“神”操作，例如神不知鬼不觉的替换一个版本，不管是更新一个还是回退一个，抑或是偷偷的尝试了一个版本。即使不上线也可以使用流量镜像能力将现有业务流在测试业务版本下进行现实业务场景测试。这样的测试才能保障业务在上线后真实按照测试期的预测结果完成业务目标，而不至于每次新业务更迭都要经历无法预期的“生死考验”。</h>
 
-同样通过下面这个命令可以进入 Container 容器，使用 sh 来执行各种标准 Linux 操作命令（前提是这个镜像里包含了你想要执行的命令，很多容器是精简过的，为了稳定且高效，镜像通常会将所有不需要的命令都排除。）
-使用 ‘-c’ 参数来制定登陆到那个 Container 中（别忘了你的 Pod 有两个 Container）。 ‘-c server’ 是因为在上面 Manifest 文件里我们将 'image: nginx:1.13-alpine' 镜像的 ‘-name: server’ 指定为 server 这个名字。
-Let's first execute a shell session inside the server container by using the -c flag:
-```
-oc exec -it my-two-container-pod -c server -- /bin/sh
-```
-登陆入容器 ‘sh’ 后你可以执行以下命令：
-```
-ip address
-netstat -ntlp
-hostname
-ps
-exit
-```
-这些命令都是 nginx 镜像包含的。
-
-在 Side-car 容器中可以执行以下命令， 这个场景中的 Side-car 容器是一个摆设，只是在 aphine linux 上执行了一个空输出 ‘tail -f /dev/null’ ， 之所以需要执行这样一个空输出是因为 Kubernetes 将容器调度起来后需要由容器自己决定自己的“生死”。 如果在基础镜像中不包含持续执行的独占进程时，容器会自动执行完毕并退出，Kubernetes 则认为容器自己认为自己 “已死” 然后重启容器，这样就会陷入一个循环，多次循环（根据 Kubernetes 参数配置决定多少次）后 Kubernetes 会认为 Pod 处于不可恢复状态，并报知 Kubernetes 调度体系，在监控上可以看得到。
-```
-oc exec -it my-two-container-pod -c side-car -- /bin/sh
-```
-
-在 side-car 容器中也可以执行刚才那些命令，你会获得部分相同的结果，包括 ip、hostname 等，这是为了展示一下多容器 Pod 实际上在底层操作系统上会为每个容器产生单独的 cgroup ，但是会共享 IPC、网络、UTC namespace（）等基础资源，OpenShift （Kubernetes） 在调度他们的时候，它们会永远在一起，而不会分到不同的主机上去。
-Run the same commands in side-car container. Each container within a pod runs it's own cgroup, but shares IPC, Network, and UTC (hostname) namespaces:
-```
-ip address
-netstat -ntlp
-hostname
-exit
-```
-
-###### 其它
-实验的执行结果如下，：
-```
-$ oc exec -it my-two-container-pod -c server -- /bin/sh
-/ # ip address
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host
-       valid_lft forever preferred_lft forever
-3: eth0@if29: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue state UP
-    link/ether 0a:58:0a:80:00:17 brd ff:ff:ff:ff:ff:ff
-    inet 10.128.0.23/23 brd 10.128.1.255 scope global eth0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a88e:7bff:fe20:a406/64 scope link
-       valid_lft forever preferred_lft forever
-/ # netstat -ntlp
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1/nginx: master pro
-/ # hostname
-my-two-container-pod
-/ # ps
-PID   USER     TIME   COMMAND
-    1 root       0:00 nginx: master process nginx -g daemon off;
-    8 nginx      0:00 nginx: worker process
-    9 root       0:00 /bin/sh
-   18 root       0:00 ps
-/ # exit
-$
-$
-$ oc exec -it my-two-container-pod -c side-car -- /bin/sh
-/ # ip address
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host
-       valid_lft forever preferred_lft forever
-3: eth0@if29: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue state UP
-    link/ether 0a:58:0a:80:00:17 brd ff:ff:ff:ff:ff:ff
-    inet 10.128.0.23/23 brd 10.128.1.255 scope global eth0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a88e:7bff:fe20:a406/64 scope link
-       valid_lft forever preferred_lft forever
-/ # netstat -ntlp
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -
-/ # hostname
-my-two-container-pod
-/ # ps
-PID   USER     TIME  COMMAND
-    1 root      0:00 /usr/bin/tail -f /dev/null
-   17 root      0:00 /bin/sh
-   24 root      0:00 ps
-/ #
-/ # exit
-$
-```
-对比可以看到 ‘ip address’ 一样，hostname 一样，netstat 不完全一样（ side-car 可以看见监听 80 端口，可是无法看到 PID/Program name），‘ps’ 完全不一样。这就是两个 Container Pod 的基础原理。<br>
-![Create two containers Pod success katacoda view](snapshort/katacoda_twoContainer_snapshort.jpg)
-
-注意上面这个截图，不管是不是在 Katacoda 上，成功建立 Pod 都会是如上图下方Terminal中显示（在 oc 客户端登陆到远程 OpenShift 时一样有效）。 Katacoda 厉害的地方是还会帮你展示一个你操作过文件的目录，方便你操作自己曾经编写的文件及目录。<br>
-![katacoda files broswer and edit view](snapshort/katacoda_edit_file_snapshort.jpg)
 
 [回到顶部](#第一步)
 [下一步骤](Step2.md)
