@@ -2,7 +2,6 @@
 
 使用下面链接可以直接进入场景
 https://learn.openshift.com/servicemesh/1-introduction
-本场景用于帮助用户理解 Kubernetes API 的基础服务方式与如何提供 Operator API 给Operator 消费者或供应者。
 
 场景的定义难度为基础，所需时间为30分钟<br>
    Difficulty: Basic  Estimated Time: 30 minutes    <br>
