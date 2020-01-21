@@ -6,12 +6,12 @@ https://learn.openshift.com/servicemesh/1-introduction
 
 场景的定义难度为基础，所需时间为30分钟<br>
    Difficulty: Basic  Estimated Time: 30 minutes    <br>
-该场景仅仅是为了给学习者一个概念，服务网格（Service Mesh）究竟是什么，Istio是什么他们究竟表现为一个什么形式。
+该场景仅仅是为了给学习者一个概念，服务网格（Service Mesh）究竟是什么，Istio是什么他们究竟表现为一个什么形式。<br>
 
-快速链接
-[场景说明](#场景说明)
-[操作步骤](#操作步骤)
-[其它](#其它)
+快速链接: <br>
+[场景说明](#场景说明) <br>
+[操作步骤](#操作步骤) <br>
+[返回](#../README.md) <br>
 
 #### 场景说明
 Redhat 给该场景的说明
