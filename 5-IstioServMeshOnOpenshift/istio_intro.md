@@ -21,7 +21,7 @@ Then you will be introduced to terms like Mixer, Pilot and Proxy/Sidecar
 Finally, you will learn how to install Istio on a Kubernetes/OpenShift cluster
 
 本方案将向您介绍服务网格的概念以及我们为什么需要它。
-然后将向您介绍混音器，飞行员和代理/侧车等术语
+然后将向您介绍Envoy，Pilot和Agent/Sidecar等术语
 最后，您将学习如何在Kubernetes / OpenShift集群上安装Istio
 
 除了以上官方解释外，需要补充的是，本场景使用的是开源的 Istio 1.0.x 版本的 OpenShift 服务网格方案。除此外 Redhat 还提供了基于 Operator 的 Istio 版本和相应的支持，这两个版本虽然管理方式、开发方式基本相同，但内部的一些细节是不同的，有些操作会产生相同操作但结果异常的情况，在这里我希望能尽量解释它们之间的不同和解决方式，以便让读者了解在真实世界的服务网格环境中，怎样屏蔽技术细节对全局架构产生的误导，让大家回归到业务目标方向上来理解服务网格究竟应该用来做什么。
