@@ -37,7 +37,7 @@ https://github.com/openshift-labs/learn-katacoda
 
 5. Service Mesh Workshop with Istio 
     -Openshift 微服务 Istio 构建教程
-    <font color=red>（制作中···）</font><br>
+    <I color=red>（制作中···）</I><br>
     ###### 教程场景 Scenarios 5
 
     - [Istio 介绍](5-IstioServMeshOnOpenshift/istio_intro.md)
