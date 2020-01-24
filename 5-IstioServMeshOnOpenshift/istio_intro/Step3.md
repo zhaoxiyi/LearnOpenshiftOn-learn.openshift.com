@@ -26,7 +26,7 @@ $oc login -u system:admin
 ```
 > system:admin 是 Kubernetes 和 OpenShift 都具有的内部用户。这个用户在初始化 Kubernetes 时就会供应。但这个用户时如何较验的呢？<br>
 > 在 Kubernetes/OpenShift 供应的时候会自己建立一个 kubeconfig 和 kubeadmin-password 文件。这两个文件kubeconfig 一个为本机描述了 Kubernetes/OpenShift 是如何配置的，同时包含了基础用户的完整密钥（记得如果你使用了 OpenShift 并对接了 LDAP 之类的认证源，这里是不会有任何信息的，它只包含初始配置时的内部认证用户），kubeadmin-password 则记录了 Kubernetes/Openshift system:admin 这个特殊用户的 Tocken。 只要你有了它们，你就可以按照系统内部管理员的身份来登陆了。
-> ```
+```
 [user@clientvm 0 ~]$ sudo ls /home/user/cluster-82c7
 auth  metadata.json  terraform.aws.auto.tfvars	terraform.tfstate  terraform.tfvars  tls
 [user@clientvm 0 ~]$ sudo ls /home/ec2-user/cluster-82c7/auth
@@ -38,7 +38,7 @@ Bec7L-swnFu-JUweV-E4HYY
 [user@clientvm 0 ~]$ export KUBECONFIG=${HOME}/cluster-${GUID}/auth/kubeconfig
 [user@clientvm 0 ~]$ oc whoami
 system:admin
-> ```
+```
 > 从上面这段操作可以看出，只要你把初始配置的 auth 目录发给某个特定的机器，它就可以作为管理机无密码登陆了，你甚至可以在一个管理机上配置很多 cluster 目录来实现中央管理，但要注意安全，因为只要有了这两个文件，所在的服务器就相当于进了数据库的 DBA Console 了。在这台管理机上什么都可以无密码操作。
 
 #### 获得Istio安装内容
