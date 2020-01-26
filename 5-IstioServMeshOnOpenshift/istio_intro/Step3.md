@@ -114,7 +114,7 @@ customresourcedefinition.apiextensions.k8s.io/instances.config.istio.io created
 customresourcedefinition.apiextensions.k8s.io/templates.config.istio.io created
 customresourcedefinition.apiextensions.k8s.io/handlers.config.istio.io created
 ```
-> 从上面这个构建列表里面可以看出，围绕着 Isio 需要建立大量的辅助资源，例如各种权限 “RBAC”， 各种角色 “Role”，各种组件所需的配额 “Quota” ，各种资源的配置 “Config” ，一部分网络设置 “Network”， 一部分授权 “Authentication” 等等。
+> 从上面这个构建列表里面可以看出，围绕着 Istio 需要建立大量的辅助资源，例如各种权限 “RBAC”， 各种角色 “Role”，各种组件所需的配额 “Quota” ，各种资源的配置 “Config” ，一部分网络设置 “Network”， 一部分授权 “Authentication” 等等。
 
 #### 继续安装
 在这个演示中 Istio 提供了一个 yaml 描述文件，`install/kubernetes/istio-demo.yaml` 这个文件中包含了 istio 所需要的所有对象的描述，通过使用这个文件可以在 Kubernetes cluster 直接建立 istio-system 这个 namespace 以及 namespace 下所有对象。
@@ -285,7 +285,6 @@ $
 oc get pods -w -n istio-system
 ``` 
 一旦发现所有的 Pod 都是 `Running` 状态就可以使用 `CTRL+C` 来停止这个监视命令
-> oc get pods `-w` 
 
 #### 建立外部访问routes
 Create external routes
