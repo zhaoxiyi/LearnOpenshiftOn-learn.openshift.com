@@ -19,6 +19,14 @@ Deploy Recommendation microservice
 cd ~/projects/istio-tutorial/recommendation/java/vertx
 ```
 按照上一个步骤中的过程,使用 `mvn package` 编译出 recommendations.jar 文件。
+> 这里要介绍以下什么是 Vert.x 。Eclipse Vert.x 是事件驱动和非阻塞的开发框架。这意味着您的应用程序可以使用少量的内核线程处理大量并发。Vert.x让你的应用程序可以用最少的硬件扩展。 具体细节可以查看 Vert.x 的官方网站 https://vertx.io 
+> Eclipse Vert.x 可以与多种语言配合 Java, JavaScript, Groovy, Ruby, Ceylon, Scala and Kotlin. 它具有以下特点：
+> - Vert.x 是轻量级的，核心约650kB的大小。
+> - Vert.x 不是一种应用程序服务器。没有可以部署应用程序的单体 Vert.x 实例。你只需在任何你想运行的地方运行你的应用程序。
+> - Vert.x 是模块化的,当你需要更多的 bits 时，只需添加你需要的 bits ，而不需要其它配合。
+> - Vert.x 是简单的，但不是简单的。Vert.x允许你简单地创建强大的应用程序。
+> - Vert.x是创建轻量级、高性能、微服务的理想选择
+> 所以这个演示场景里选择使用 SpringBoot 来实现接口的 Customer 和 Perference 而到了核心逻辑执行的 recommendations 微服务则使用 Vert.x 来降低额外资源消耗，提高并发处理能力。
 
 ### 构建镜像
 同样按照上一个步骤中的过程建立 preference 的 docker image。
