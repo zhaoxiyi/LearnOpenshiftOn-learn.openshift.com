@@ -1,33 +1,70 @@
 # 第一步
+Create the Example project <br>
+建立一个样例项目
+
 ###### 快捷链接
-[场景综述](../istio_intro.md) <br>
+[返回场景综述](../deploy_microservices.md) <br>
 [下一步](Step2.md) <br>
 
 #### 操作过程
-[本场景没有操作步骤只有Istio基础概念解释](#概念解释) <br>
+[概念解释](#概念解释) <br>
+[创建项目](#创建项目) <br>
+[赋予privileged权限](#赋予privileged权限) <br>
 
 ### 概念解释
-什么是服务网格，为什么我们需要它？
-术语服务网格用于描述组成此类应用程序的微服务网络及其之间的交互。随着服务网格的大小和复杂性的增长，它变得越来越难以理解和管理。它的要求可以包括发现，负载平衡，故障恢复，指标和监视。服务网格通常还具有更复杂的操作要求，例如A / B测试，金丝雀版本，速率限制，访问控制和端到端身份验证。
-<h color="red">这是 Redhat 官方给出的解释，但是我要强调的是，在现在技术理论中，无论那种技术，都是以“以资源来交换便利性”为基础的。 Istio 或是任何一种其它的服务网格技术也都是如此。Istio 从出现之初在国内被人质疑的就是性能降低的问题。其实这个问题是不用尝试 Istio 也可以理解的。将一个完整的服务被拆成若干个相互沟通的单元服务，并且在其中增加了 SideCar 这样的代理点，这一切自然是会降低性能的。但大家考虑为什么要或是要不要使用服务网格时，一定要同时考虑到 Istio 这样的技术为什么会在 Kubernetes 这个技术成熟后才成为关注焦点。这是因为 Kubernetes 提供的多 Pod 共同支撑一个单元业务运行在跨网络计算资源这种基础技术架构为整体性能提供了一种浮动式调整的机制，这意味着你可以随时让跨网络 4 Coer CPU 执行的业务变为跨网络 8 Core CPU 执行，不受任何物理范围及其它原因的限制。这就式真正的业务目标可以抽象的在集群化计算资源上浮动调整，那么以 Istio 为例，它所额外的消耗可以很容易的均摊到更多的计算资源上去。只要可以完整单位时间的业务目标，谁又在乎多话费一些计算资源呢？何况多花费的计算资源还会因为 Kubernetes 的跨网络调度机制，通过计算资源利用率的提高弥补回来，我们甚至不需要多购买新的硬件就可以获取更多可用的计算资源。 这就是为什么我总想向我的客户解释， 在考虑服务网格是否适合真实业务需求时，用户其实并不需要更多的关注于 Istio 究竟带来了多少指定资源内的性能下降，而是应该考虑完成既定业务目标 （例如设定原业务预期的单元测试的TPCC值）预期下，我们需要多花费多少计算资源（Pod 数量和 CPU 配额）。在此基础之上，如果我们判断了我们可接受计算资源的额外开销，那么接下来我们要判断的就是服务网格是否能给我们带来我们所需的好处了。</h>
+在这个示例中会部署三个微服务。 (customer, preference, recommendation)  这三个微服务程序基于 Spring Boot 和 Vert.x. 实现
+这三个微服务的逻辑为，首先当外部请求 customer 微服务时，customer 会产生请求至 perference ，而 perference 则会基于请求向 recommendation 发起请求。
 
-Istio提供了整个服务网格上的行为洞察力和操作控制，从而提供了一个完整的解决方案来满足微服务应用程序的各种需求。它在服务网络中统一提供许多关键功能：
-   - Traffic Management 流量控制。控制服务之间的流量和API调用流，使调用更可靠，并在不利条件下使网络更健壮。
-   - Observability  可观察性。了解服务之间的依赖性以及服务之间的流量的性质和流，从而能够快速发现问题。
-   - Policy Enforcement 政策执行。将组织策略应用于服务之间的交互，确保访问策略得到实施，并且资源在消费者之间公平分配。策略更改是通过配置网格进行的，而不是通过更改应用程序代码来进行的。
-   - Service Identity and Security 服务身份和安全性。为网状网络中的服务提供可验证的身份，并提供保护服务流量的能力，使其流经不同程度的信任度的网络。
+### 创建项目
+要部署微服务首先要建立一个项目作为所有微服务的整体组织框架。
+> 这一点 OpenShfit 与 Kubernetes 是不一样的，OpenShift 针对 kubernetes 只有 namespace 不方便对应用之间的逻辑进行组织设计，而且也无法完全体现出多租户的逻辑来，甚至无法基于租户实现具体的租户资源隔离这一问题。OpenShift 设计了 Project 这个基础结构，在 Project 下租户可以有效的分配自己的资源，把基于业务相关的应用组织在一起。一个用户可以有若干个 Projects ，每个 Project 下可以包含相对紧密的一组业务逻辑。每个 Project 也可以指定相对独立的资源限定或资源配额。
+> - 这里稍微赘述一点，根据我个人的经验，在中国的众多项目中，大部分平台，仅有 Project 也不足以满足真实项目的需求。因为在中国的真实大型 PaaS 项目中，通常使用者会分为业务维护组、业务代维组、业务开发者（外部开发商）、平台运维组、平台代维组、平台支撑组（外部集成商）等等众多身份。同时还会涉及到承担不同项目责任的从属于不同法人主体的参与单位或小组。并且会涉及到项目参与人员在众多项目中交叉参与的复杂情况。例如，某个独立项目的 PM 恰好是另一个项目的项目参与人。这样，当这个人使用平台时，为了合规与便于管理他需要始终使用他个人的平台登陆身份。但同时，当他参与到不同项目中时，他所面临的配额、权限、项目群都不一样。在这种情况下，通常我们需要将 OpenShift 中的 User、 ServiceAccount、Project 结合他的 SCC 权限进行复杂组合，这样才能满足真实业务场景需求。 甚至有时候我们可以以此为基础在增加一个虚拟的总体租户管理平台，租户本身是虚拟的概念，但其配额及权限可以根据其登陆平台时的身份进行二次鉴权，这样每个登陆平台的身份和其它身份之间的资源或项目资源都可以完全隔离，能够更好适应中国大型 PaaS 平台的实际业务及安全的需求。
 
-除了这些行为之外，Istio还具有可扩展性，可以满足各种部署需求：
-   - Platform Support 平台支持。 Istio旨在在多种环境中运行，包括跨Cloud，本地，Kubernetes，Mesos等的环境。我们最初专注于Kubernetes，但正在努力为其他环境提供支持。
-   - Integration and Customization 集成和定制。可以扩展和定制策略执行组件，以与现有的ACL，日志记录，监视，配额，审计等解决方案集成。
+```
+oc new-project tutorial
+```
+### 赋予privileged权限
+拥有了 tutorial 这个项目后，需要对这个项目进行一定的特殊赋权
 
-这些功能极大地减少了应用程序代码，基础平台和策略之间的耦合。这种减少的耦合不仅使服务更易于实现，而且使运营商更容易在环境之间或新的策略方案之间移动应用程序部署。结果，应用程序本来就变得更加可移植。
+```
+oc adm policy add-scc-to-user privileged -z default -n tutorial
+```
+> 我们这里是将 default 这个 namespace 的 privileged 这个特殊权限交给 tutorial 这个项目，这样能够使 tutorial 项目的参与者都能够使用 default namespace 下的所有资源，这里其实主要是为了将 default 下的 docker registry 组件权限交给 tutorial 
+```
+$ oc adm policy add-scc-to-user privileged -z default -n tutorial
+scc "privileged" added to: ["system:serviceaccount:tutorial:default"]
+$
+$ oc get scc privileged
+NAME         PRIV      CAPS      SELINUX    RUNASUSER   FSGROUP    SUPGROUP   PRIORITY   READONLYROOTFS   VOLUMES
+privileged   true      [*]       RunAsAny   RunAsAny    RunAsAny   RunAsAny   <none>     false   [*]
+$
+$ oc get all -n default
+NAME                           READY     STATUS    RESTARTS   AGE
+pod/docker-registry-1-dtw5r    1/1       Running   0          3h
+pod/registry-console-1-jt4xp   1/1       Running   0          3h
+pod/router-1-zzfpm             1/1       Running   0          3h
 
-<h color="red">从上面的能力描述我们可以看出， Istio 作为服务网格解决方案，主要解决四个方向的问题，流量控制、执行监控、访问策略插入、身份和安全控制插入。当然这四个方面扩展出去可以有无限多的可能性，也就是说为什么要用服务网格可以有任意多种理由，但是为什么不使用 Istio 就可以简单的以一个标准来衡量。如果从根本上就不需要控制业务执行的数据流量、不需要理解业务内部执行的逻辑、不需要随业务执行增加新的执行可能性、不需要动态协调执行的安全问题，这四者并存那么你一定不需要服务网格。其实这么解释我们也可以从某些特定场景上来理解，假如我们碰到一个业务，它执行了好几年，业务职能正常，开发者已经找不到了，我也不想对他的执行环境做任何调整，它的改变对于业务盈利没有什么促进，那么我们当然不需要把它搞成服务网格。它最多可以成为某个沉淀业务单元或是原子化服务的后端。微服务什么的还是弄到那些更能促进业务收入的方向比较好。</h>
+NAME                                       DESIRED   CURRENT   READY     AGE
+replicationcontroller/docker-registry-1    1         1         1         3h
+replicationcontroller/registry-console-1   1         1         1         3h
+replicationcontroller/router-1             1         1         1         3h
 
-什么是流量？
-使用 Istio 的流量管理模型从本质上将流量与基础架构扩展脱钩，让操作者通过 Pilot 指定他们希望流量遵循哪些规则，而不是哪些特定的 Pod/VM 应该接收流量- Pilot 和智能 Envoy 代理负责其余任务。因此，例如，您可以通过 Pilot 指定您希望特定服务的5％流量转到金丝雀（ Canary ）版本，而与金丝雀部署的大小无关，或者根据请求的内容将流量发送到特定版本。
-<h color="red"> Istio 解决方案中，对流量控制是一个很诱人的能力，它可以实现若干种平时我们趋之若鹜的“神”操作，例如神不知鬼不觉的替换一个版本，不管是更新一个还是回退一个，抑或是偷偷的尝试了一个版本。即使不上线也可以使用流量镜像能力将现有业务流在测试业务版本下进行现实业务场景测试。这样的测试才能保障业务在上线后真实按照测试期的预测结果完成业务目标，而不至于每次新业务更迭都要经历无法预期的“生死考验”。</h>
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE
+service/docker-registry    ClusterIP   172.30.184.35   <none>        5000/TCP                  3h
+service/kubernetes         ClusterIP   172.30.0.1      <none>        443/TCP,53/UDP,53/TCP     3h
+service/registry-console   ClusterIP   172.30.14.88    <none>        9000/TCP                  3h
+service/router             ClusterIP   172.30.88.202   <none>        80/TCP,443/TCP,1936/TCP   3h
+
+NAME                                                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfig.apps.openshift.io/docker-registry    1          1         1         config
+deploymentconfig.apps.openshift.io/registry-console   1          1         1         config
+deploymentconfig.apps.openshift.io/router             1          1         1         config
+
+NAME                                        HOST/PORT                PATH      SERVICES           PORT      TERMINATION   WILDCARD
+route.route.openshift.io/docker-registry    docker-registry-default.2886795284-80-kitek03.environments.katacoda.com              docker-registry    <all>     passthrough   None
+route.route.openshift.io/registry-console   registry-console-default.2886795284-80-kitek03.environments.katacoda.com             registry-console   <all>     passthrough   None
+$
+```
 
 
 [回到顶部](#第一步)
